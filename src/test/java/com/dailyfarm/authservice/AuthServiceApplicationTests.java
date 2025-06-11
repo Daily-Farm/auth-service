@@ -1,4 +1,4 @@
-package com.dailyfarm.auth;
+package com.dailyfarm.authservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

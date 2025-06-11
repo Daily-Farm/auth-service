@@ -1,4 +1,4 @@
-package com.dailyfarm.auth;
+package com.dailyfarm.authservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
