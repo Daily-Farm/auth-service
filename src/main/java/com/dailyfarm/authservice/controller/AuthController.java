@@ -1,10 +1,10 @@
 package com.dailyfarm.authservice.controller;
 
-import com.dailyfarm.authservice.entity.User;
+import com.dailyfarm.authservice.dto.AuthResponse;
+import com.dailyfarm.authservice.dto.LoginRequest;
+import com.dailyfarm.authservice.dto.RegisterRequest;
 import com.dailyfarm.authservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,15 +22,19 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.save(user);
+    public AuthResponse register(@RequestBody RegisterRequest request) {
+        if (userService.existsByEmail(request.getEmail())) {
+            return new AuthResponse("Email already exists");
+        }
+        userService.register(request);
+        return new AuthResponse("Registration successful");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User loginRequest) {
-        return userService.findByEmail(loginRequest.getEmail())
-            .filter(user -> user.getPassword().equals(loginRequest.getPassword()))
-            .map(user -> ResponseEntity.ok("Login successful"))
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials"));
+    public AuthResponse login(@RequestBody LoginRequest request) {
+        if (userService.authenticate(request)) {
+            return new AuthResponse("Login successful");
+        }
+        return new AuthResponse("Invalid credentials");
     }
 }
